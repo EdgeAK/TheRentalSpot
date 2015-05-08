@@ -21,6 +21,25 @@ class Director(models.Model):
         managed = False
         db_table = 'Director'
 
+
+class Game(models.Model):
+    media = models.ForeignKey('Media', primary_key=True)
+    no_players = models.CharField(max_length=5)
+
+    class Meta:
+        managed = False
+        db_table = 'GAME'
+
+
+class GameHasGenre(models.Model):
+    media = models.ForeignKey(Game)
+    game_genre = models.ForeignKey('GameGenre')
+
+    class Meta:
+        managed = False
+        db_table = 'GAME_has_Genre'
+
+
 class GameGenre(models.Model):
     game_genre_id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=10)
@@ -28,7 +47,59 @@ class GameGenre(models.Model):
     class Meta:
         managed = False
         db_table = 'Game_Genre'
-    
+
+
+class Media(models.Model):
+    media_id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=30)
+    description = models.CharField(max_length=300)
+    platform = models.CharField(max_length=10)
+    cover_img = models.TextField()
+    esrb = models.CharField(max_length=10)
+    cust_rating = models.IntegerField()
+    date_rented = models.DateField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'MEDIA'
+
+
+class Movie(models.Model):
+    media = models.ForeignKey(Media, primary_key=True)
+    runtime = models.TimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'MOVIE'
+
+
+class MovieHasDirector(models.Model):
+    media = models.ForeignKey(Movie, primary_key=True)
+    director = models.ForeignKey(Director)
+
+    class Meta:
+        managed = False
+        db_table = 'MOVIE_has_Director'
+
+
+class MovieHasGenre(models.Model):
+    media = models.ForeignKey(Movie)
+    movie_genre = models.ForeignKey('MovieGenre')
+
+    class Meta:
+        managed = False
+        db_table = 'MOVIE_has_Genre'
+
+
+class MovieHasStar(models.Model):
+    media = models.ForeignKey(Movie)
+    star = models.ForeignKey('Star')
+
+    class Meta:
+        managed = False
+        db_table = 'MOVIE_has_Star'
+
+
 class MovieGenre(models.Model):
     movie_genre_id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=10)
@@ -37,99 +108,9 @@ class MovieGenre(models.Model):
         managed = False
         db_table = 'Movie_Genre'
 
-class Star(models.Model):
-    star_id = models.AutoField(primary_key=True)
-    fname = models.CharField(max_length=15)
-    lname = models.CharField(max_length=15)
-
-    class Meta:
-        managed = False
-        db_table = 'Star'
-
-
-#class GameHasGenre(models.Model):
-#    game_game_media = models.ForeignKey(Game, db_column='GAME_game_media_id')  # Field name made lowercase.
-#    game_genre_game_genre = models.ForeignKey('GameGenre', db_column='Game_Genre_game_genre_id')  # Field name made lowercase.
-#
-#    class Meta:
-#        managed = False
-#        db_table = 'GAME_has_Genre'
-
-
-
-
-
-class Media(models.Model):
-    media_id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=30)
-    description = models.TextField(max_length=300)
-    platform = models.CharField(max_length=10)
-    cover_img = models.TextField()
-    esrb = models.CharField(max_length=10)
-    cust_rating = models.IntegerField(default=0)
-    date_rented = models.DateField(null=True, blank=True)
-
-    class Meta:
-        managed = False
-        db_table = 'MEDIA'
-
-
-class Movie(models.Model):
-    movie_media = models.ForeignKey(Media, primary_key=True)
-    director = models.ManyToManyField(Director)
-    star = models.ManyToManyField(Star)
-    genre = models.ManyToManyField(MovieGenre) 
-    runtime = models.TimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'MOVIE'
-    pass
-
-class Game(models.Model):
-    game_media = models.ForeignKey('Media', primary_key=True)
-    genre = models.ManyToManyField(GameGenre)
-    no_players = models.CharField(max_length=5)
-
-    class Meta:
-        managed = False
-        db_table = 'GAME'
-    pass
-
-
-#class MovieHasDirector(models.Model):
-#    movie_movie_media = models.ForeignKey(Movie, db_column='MOVIE_movie_media_id')  # Field name made lowercase.
-#    director_director = models.ForeignKey(Director, db_column='Director_director_id')  # Field name made lowercase.
-#
-#    class Meta:
-#        managed = False
-#        db_table = 'MOVIE_has_Director'
-
-
-#class MovieHasGenre(models.Model):
-#    movie_movie_media = models.ForeignKey(Movie, db_column='MOVIE_movie_media_id')  # Field name made lowercase.
-#    movie_genre_movie_genre = models.ForeignKey('MovieGenre', db_column='Movie_Genre_movie_genre_id')  # Field name made lowercase.
-#
-#    class Meta:
-#        managed = False
-#        db_table = 'MOVIE_has_Genre'
-
-
-#class MovieHasStar(models.Model):
-#    movie_movie_media = models.ForeignKey(Movie, db_column='MOVIE_movie_media_id')  # Field name made lowercase.
-#    star_star = models.ForeignKey('Star', db_column='Star_star_id')  # Field name made lowercase.
-#
-#    class Meta:
-#        managed = False
-#        db_table = 'MOVIE_has_Star'
-
-
-
-
 
 class Renter(models.Model):
-    renter_id = models.IntegerField(primary_key=True)
-    media = models.ManyToManyField(Media)
+    renter_id = models.AutoField(primary_key=True)
     fname = models.CharField(max_length=15)
     lname = models.CharField(max_length=15)
     dob = models.DateField()
@@ -142,17 +123,22 @@ class Renter(models.Model):
     class Meta:
         managed = False
         db_table = 'RENTER'
-    pass
 
 
-#class RenterHasMedia(models.Model):
-#    renter = models.ForeignKey(Renter, primary_key=True)
-#    media = models.ForeignKey(Media)
-#    date_rented = models.DateField()
-#
-#    class Meta:
-#        managed = False
-#        db_table = 'RENTER_has_MEDIA'
+class RenterHasMedia(models.Model):
+    renter = models.ForeignKey(Renter)
+    media = models.ForeignKey(Media)
+
+    class Meta:
+        managed = False
+        db_table = 'RENTER_has_MEDIA'
 
 
+class Star(models.Model):
+    star_id = models.AutoField(primary_key=True)
+    fname = models.CharField(max_length=15)
+    lname = models.CharField(max_length=15)
 
+    class Meta:
+        managed = False
+        db_table = 'Star'

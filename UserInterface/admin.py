@@ -1,5 +1,5 @@
 from django.contrib import admin
-from UserInterface.models import Director, Game, MovieGenre, GameGenre, Media, Movie, Renter, Star
+from UserInterface.models import Director, Game, MovieGenre, GameGenre, Media, Movie, Renter, Star, MovieHasDirector
 from grappelli_nested.admin import NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
 
@@ -28,6 +28,7 @@ admin.site.register(Renter)
 admin.site.register(Star)
 admin.site.register(GameGenre)
 admin.site.register(MovieGenre)
+admin.site.register(MovieHasDirector)
 # Register your models here.
 
 #from django.contrib import admin
